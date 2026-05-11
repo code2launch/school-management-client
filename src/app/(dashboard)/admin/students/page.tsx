@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -131,11 +132,10 @@ export default function StudentsPage() {
                       </td>
                       <td className="text-sm text-muted-foreground">{formatDate(s.createdAt)}</td>
                       <td>
-                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                          s.isActive
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${s.isActive
                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                             : 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
-                        }`}>{s.isActive ? 'Active' : 'Inactive'}</span>
+                          }`}>{s.isActive ? 'Active' : 'Inactive'}</span>
                       </td>
                       <td>
                         <div className="flex items-center gap-1">

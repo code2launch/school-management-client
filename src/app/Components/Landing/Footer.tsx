@@ -4,7 +4,7 @@ import { GraduationCap, Mail, Phone, MapPin } from 'lucide-react';
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-[#142152] text-white">
+    <footer className="bg-[#00464e] text-white">
       <div className="max-w-7xl mx-auto px-5 xl:px-0 pt-14 pb-5">
         <div className="grid md:grid-cols-4 gap-10 mb-10">
           {/* Brand */}

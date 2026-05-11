@@ -35,7 +35,7 @@ export default function TopBar() {
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-30 flex items-center px-5 gap-4">
-      <div className="flex-1">
+      <div className="ms-10 lg:ms-0 flex-1">
         <h1 className="font-playfair font-bold text-lg text-foreground">{title}</h1>
         <p className="text-xs text-muted-foreground hidden sm:block">
           {new Date().toLocaleDateString('en-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}

@@ -5,35 +5,84 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { GraduationCap, Eye, EyeOff, Loader2 } from 'lucide-react';
+import {
+  GraduationCap,
+  Eye,
+  EyeOff,
+  Loader2,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react';
 import { useState } from 'react';
+
 import { useLoginMutation } from '@/redux/features/auth/authApi';
 import { setCredentials } from '@/redux/features/auth/authSlice';
-import ThemeToggleButton from '@/components/ThemeToggleButton';
 
-interface LoginData { phone: string; password: string }
+interface LoginData {
+  phone: string;
+  password: string;
+}
 
 const DEMO_ROLES = [
-  { label: 'Admin', phone: '01700000000', pw: 'Admin@1234', color: 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200 dark:border-purple-800' },
-  { label: 'Teacher', phone: '01711111111', pw: 'Teacher@1234', color: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800' },
+  {
+    label: 'Admin',
+    phone: '01700000000',
+    pw: 'Admin@1234',
+  },
+  {
+    label: 'Teacher',
+    phone: '01711111111',
+    pw: 'Teacher@1234',
+  },
+];
+
+const FEATURES = [
+  'Attendance & fee automation',
+  'Role-based secure dashboard',
+  'Exam & result management',
+  'Built for Bangladeshi schools',
 ];
 
 export default function LoginForm() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [login, { isLoading }] = useLoginMutation();
+
   const [showPw, setShowPw] = useState(false);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LoginData>();
+
+  const [login, { isLoading }] = useLoginMutation();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<LoginData>();
 
   const onSubmit = async (data: LoginData) => {
     try {
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      const res = await login(data).unwrap() as any;
+      const res = (await login(data).unwrap()) as any;
+
       if (res.success) {
-        dispatch(setCredentials({ user: res.data.user, token: res.data.accessToken }));
+        dispatch(
+          setCredentials({
+            user: res.data.user,
+            token: res.data.accessToken,
+          })
+        );
+
         toast.success('Welcome back!');
+
         const role = res.data.user.role;
-        router.push(role === 'ADMIN' ? '/admin' : role === 'TEACHER' ? '/teacher' : '/student');
+
+        router.push(
+          role === 'ADMIN'
+            ? '/admin'
+            : role === 'TEACHER'
+              ? '/teacher'
+              : '/student'
+        );
       } else {
         toast.error(res.message || 'Login failed');
       }
@@ -43,121 +92,261 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-4xl">
-      {/* Top bar */}
-      <div className="flex items-center justify-between mb-8">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <GraduationCap size={16} className="text-primary-foreground" />
-          </div>
-          <span className="font-playfair font-bold text-lg">Edu<span className="text-[oklch(0.70_0.15_76)]">Core</span></span>
-        </Link>
-        <ThemeToggleButton />
-      </div>
+    <section className="relative min-h-screen overflow-hidden bg-[#f8fafc]">
 
-      <div className="grid lg:grid-cols-2 gap-8 items-center">
-        {/* Left — branding */}
-        <div className="hidden lg:block">
-          <div className="relative bg-primary rounded-3xl p-10 overflow-hidden min-h-[500px] flex flex-col justify-between">
-            <div className="absolute inset-0 hero-grid-bg opacity-20" />
-            <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-[oklch(0.70_0.15_76)]/10 blur-3xl" />
+      <div className="relative mx-auto flex min-h-screen max-w-7xl items-center px-6 py-10">
+        <div className="grid w-full overflow-hidden rounded-[36px] border border-slate-200 bg-white shadow-[0_20px_80px_rgba(15,23,42,0.06)] lg:grid-cols-2">
+          {/* LEFT SIDE */}
+          <div className="relative hidden overflow-hidden bg-[#071437] p-12 lg:flex lg:flex-col lg:justify-between">
+
             <div className="relative z-10">
-              <h2 className="font-playfair font-bold text-3xl text-white leading-tight mb-3">
-                Managing your school
-                <br />
-                <span className="gradient-text-gold">just got easier.</span>
-              </h2>
-              <p className="text-white/60 text-sm leading-relaxed mb-8">
-                Attendance, fees, exams, and communication — all in one platform built for Bangladesh.
-              </p>
-              <div className="space-y-3">
-                {[
-                  'Role-based dashboards for everyone',
-                  'Works on any Android phone',
-                  'Bangladesh curriculum & GPA system',
-                  'Free to start, no credit card needed',
-                ].map(f => (
-                  <div key={f} className="flex items-center gap-3 text-white/75 text-sm">
-                    <div className="w-5 h-5 rounded-full bg-[oklch(0.70_0.15_76)]/20 border border-[oklch(0.70_0.15_76)]/30 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2.5 h-2.5 text-[oklch(0.70_0.15_76)]" fill="none" viewBox="0 0 12 12">
-                        <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-3"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-500/10 ring-1 ring-white/10">
+                  <GraduationCap
+                    size={22}
+                    className="text-green-400"
+                  />
+                </div>
+
+                <div>
+                  <h2 className="text-2xl font-black text-white">
+                    Edu<span className="text-green-400">Core</span>
+                  </h2>
+
+                  <p className="text-xs uppercase tracking-[3px] text-white/40">
+                    School Management System
+                  </p>
+                </div>
+              </Link>
+            </div>
+
+            {/* content */}
+            <div className='h-full flex items-center'>
+              <div className="relative z-10 ">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 backdrop-blur">
+                  <span className="h-2 w-2 rounded-full bg-green-400" />
+                  Trusted by 500+ Schools
+                </div>
+
+                <p className="mt-6 max-w-md text-lg leading-8 text-white/60">
+                  Manage students, attendance, fees, exams and
+                  communication from one clean and powerful
+                  platform.
+                </p>
+
+                <div className="mt-10 space-y-4">
+                  {FEATURES.map((feature) => (
+                    <div
+                      key={feature}
+                      className="flex items-center gap-3"
+                    >
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500/10">
+                        <CheckCircle2
+                          size={16}
+                          className="text-green-400"
+                        />
+                      </div>
+
+                      <span className="text-white/80">
+                        {feature}
+                      </span>
                     </div>
-                    {f}
+                  ))}
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="flex items-center justify-center p-6 sm:p-10 lg:p-14">
+            <div className="w-full max-w-md">
+              {/* mobile logo */}
+              <div className="mb-10 flex justify-center lg:hidden">
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-3"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100">
+                    <GraduationCap
+                      size={22}
+                      className="text-green-700"
+                    />
                   </div>
+
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-900">
+                      Edu<span className="text-green-600">Core</span>
+                    </h2>
+
+                    <p className="text-xs uppercase tracking-[3px] text-slate-400">
+                      School Management
+                    </p>
+                  </div>
+                </Link>
+              </div>
+
+              {/* heading */}
+              <div className="mb-8">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-medium text-green-700">
+                  <ShieldCheck size={16} />
+                  Secure Login Portal
+                </div>
+
+                <h2 className="text-4xl font-black text-slate-900">
+                  Welcome Back
+                </h2>
+
+                <p className="mt-3 text-slate-500">
+                  Sign in to access your school dashboard.
+                </p>
+              </div>
+
+              {/* demo accounts */}
+              <div className="mb-8 grid grid-cols-2 gap-3">
+                {DEMO_ROLES.map((role) => (
+                  <button
+                    key={role.label}
+                    type="button"
+                    onClick={() => {
+                      setValue('phone', role.phone);
+                      setValue('password', role.pw);
+                    }}
+                    className="group rounded-lg border border-slate-200 bg-slate-50 py-2 text-left transition-all hover:border-green-200 hover:bg-green-50"
+                  >
+                    <p className="text-xs font-medium text-slate-400 text-center">
+                      Demo {role.label} Account
+                    </p>
+
+
+                  </button>
                 ))}
               </div>
-            </div>
-            <div className="relative z-10 pt-8 border-t border-white/10">
-              <p className="text-white/40 text-xs">Trusted by 500+ schools in Bangladesh</p>
-            </div>
-          </div>
-        </div>
 
-        {/* Right — form */}
-        <div className="bg-card border border-border rounded-3xl p-8 shadow-sm">
-          <h1 className="font-playfair font-bold text-2xl text-foreground mb-1">Welcome back</h1>
-          <p className="text-muted-foreground text-sm mb-7">Sign in to your EduCore dashboard</p>
-
-          {/* Demo fill */}
-          <div className="flex gap-2 mb-6">
-            {DEMO_ROLES.map(r => (
-              <button
-                key={r.label}
-                type="button"
-                onClick={() => { setValue('phone', r.phone); setValue('password', r.pw); }}
-                className={`flex-1 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${r.color}`}
+              {/* form */}
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-5"
               >
-                Demo {r.label}
-              </button>
-            ))}
-          </div>
+                {/* phone */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                    Phone Number
+                  </label>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Phone Number</label>
-              <input
-                {...register('phone', { required: 'Phone is required' })}
-                placeholder="01700000000"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-shadow placeholder:text-muted-foreground/60"
-              />
-              {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone.message}</p>}
-            </div>
+                  <input
+                    {...register('phone', {
+                      required: 'Phone is required',
+                    })}
+                    placeholder="01700000000"
+                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-green-500 focus:ring-4 focus:ring-green-100"
+                  />
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
-              <div className="relative">
-                <input
-                  {...register('password', { required: 'Password is required' })}
-                  type={showPw ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  className="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-shadow placeholder:text-muted-foreground/60"
-                />
+                  {errors.phone && (
+                    <p className="mt-2 text-xs text-red-500">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* password */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                    Password
+                  </label>
+
+                  <div className="relative">
+                    <input
+                      {...register('password', {
+                        required: 'Password is required',
+                      })}
+                      type={showPw ? 'text' : 'password'}
+                      placeholder="Enter your password"
+                      className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-5 pr-14 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-green-500 focus:ring-4 focus:ring-green-100"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPw(!showPw)}
+                      className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700"
+                    >
+                      {showPw ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
+                  </div>
+
+                  {errors.password && (
+                    <p className="mt-2 text-xs text-red-500">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* forgot */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-sm text-slate-600">
+                    <input
+                      type="checkbox"
+                      className="rounded border-slate-300"
+                    />
+                    Remember me
+                  </label>
+
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium text-green-700 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+
+                {/* submit */}
                 <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  type="submit"
+                  disabled={isLoading}
+                  className="group flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-green-600 text-sm font-semibold text-white transition-all hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {isLoading ? (
+                    <>
+                      <Loader2
+                        size={18}
+                        className="animate-spin"
+                      />
+                      Signing in...
+                    </>
+                  ) : (
+                    <>
+                      Sign In
+                      <ArrowRight
+                        size={18}
+                        className="transition-transform group-hover:translate-x-1"
+                      />
+                    </>
+                  )}
                 </button>
-              </div>
-              {errors.password && <p className="mt-1 text-xs text-destructive">{errors.password.message}</p>}
+              </form>
+
+              {/* footer */}
+              <p className="mt-8 text-center text-sm text-slate-500">
+                Need help?{' '}
+                <a
+                  href="mailto:code2launch.co@gmail.com"
+                  className="font-medium text-green-700 hover:underline"
+                >
+                  Contact support
+                </a>
+              </p>
             </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {isLoading ? <><Loader2 size={15} className="animate-spin" /> Signing in...</> : 'Sign In'}
-            </button>
-          </form>
-
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Need help? <a href="mailto:hello@educore.com.bd" className="text-primary hover:underline">Contact support</a>
-          </p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

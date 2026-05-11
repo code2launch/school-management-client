@@ -8,9 +8,10 @@ import { useAppSelector } from '@/redux/hooks';
 import { cn, getInitials } from '@/lib/utils';
 import {
   LayoutDashboard, GraduationCap, Users, ClipboardCheck,
-  Wallet, BookOpen, Bell, BarChart3, Settings, LogOut, ChevronLeft
+  Wallet, BookOpen, Bell, BarChart3, LogOut, ChevronLeft, Menu, X,
+  ArrowRight
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const ADMIN_LINKS = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
@@ -43,14 +44,38 @@ export default function Sidebar() {
   const dispatch = useDispatch();
   const user = useAppSelector(s => s.auth.user);
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Close mobile sidebar when screen size increases to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileOpen]);
 
   const links =
     user?.role === 'ADMIN' ? ADMIN_LINKS :
-    user?.role === 'TEACHER' ? TEACHER_LINKS : STUDENT_LINKS;
+      user?.role === 'TEACHER' ? TEACHER_LINKS : STUDENT_LINKS;
 
-  return (
+  const sidebarContent = (
     <aside className={cn(
-      'hidden lg:flex flex-col h-screen sticky top-0 bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-hidden',
+      'flex flex-col h-full bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-hidden',
       collapsed ? 'w-16' : 'w-60'
     )}>
       {/* Logo */}
@@ -75,6 +100,7 @@ export default function Sidebar() {
                 <Link
                   href={l.href}
                   title={collapsed ? l.label : undefined}
+                  onClick={() => setMobileOpen(false)}
                   className={cn(
                     'sidebar-link',
                     active && 'active',
@@ -119,5 +145,39 @@ export default function Sidebar() {
         )}
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed top-3.5 left-3 z-50 p-2 rounded-lg bg-sidebar border border-sidebar-border shadow-lg bg-background"
+      >
+        <Menu size={20} className="text-sidebar-foreground " />
+      </button>
+
+      {/* Mobile Sidebar Overlay */}
+      {mobileOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="lg:hidden fixed inset-0 bg-black/50 z-50 transition-opacity duration-300"
+            onClick={() => setMobileOpen(false)}
+          />
+
+          {/* Sidebar */}
+          <div className="lg:hidden fixed inset-y-0 left-0 z-50 shadow-2xl animate-in slide-in-from-left duration-300 bg-background">
+            {sidebarContent}
+          </div>
+
+        </>
+      )}
+    </>
   );
 }
