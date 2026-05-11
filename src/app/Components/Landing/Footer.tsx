@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { GraduationCap, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
   return (
-    <footer className="bg-primary text-primary-foreground/80">
-      <div className="max-w-7xl mx-auto px-5 xl:px-0 py-14">
+    <footer className="bg-[#142152] text-white">
+      <div className="max-w-7xl mx-auto px-5 xl:px-0 pt-14 pb-5">
         <div className="grid md:grid-cols-4 gap-10 mb-10">
           {/* Brand */}
           <div className="md:col-span-1">
@@ -12,7 +13,7 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-lg bg-[oklch(0.70_0.15_76)]/20 border border-[oklch(0.70_0.15_76)]/30 flex items-center justify-center">
                 <GraduationCap size={16} className="text-[oklch(0.70_0.15_76)]" />
               </div>
-              <span className="font-playfair font-bold text-xl text-primary-foreground">
+              <span className="font-playfair font-bold text-xl ">
                 Edu<span className="text-[oklch(0.70_0.15_76)]">Core</span>
               </span>
             </div>
@@ -28,38 +29,42 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <h4 className="font-semibold text-primary-foreground text-sm mb-4">Product</h4>
+            <h4 className="font-semibold  text-sm mb-4">Product</h4>
             <ul className="space-y-2.5 text-sm">
               {['Features', 'All Modules', 'Pricing', 'Changelog', 'Roadmap'].map(l => (
-                <li key={l}><a href="#" className="hover:text-[oklch(0.70_0.15_76)] transition-colors">{l}</a></li>
+                <li key={l}><a href="#" className="hover:text-green-500 transition-colors">{l}</a></li>
               ))}
             </ul>
           </div>
 
           {/* Modules */}
           <div>
-            <h4 className="font-semibold text-primary-foreground text-sm mb-4">Modules</h4>
+            <h4 className="font-semibold  text-sm mb-4">Modules</h4>
             <ul className="space-y-2.5 text-sm">
               {['Students', 'Teachers', 'Attendance', 'Fee Management', 'Exams & Results', 'Notice Board'].map(l => (
-                <li key={l}><a href="#" className="hover:text-[oklch(0.70_0.15_76)] transition-colors">{l}</a></li>
+                <li key={l}><a href="#" className="hover:text-green-600 transition-colors">{l}</a></li>
               ))}
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="font-semibold text-primary-foreground text-sm mb-4">Support</h4>
+            <h4 className="font-semibold  text-sm mb-4">Support</h4>
             <ul className="space-y-2.5 text-sm">
               {['Documentation', 'API Reference', 'Community', 'Contact', 'Privacy Policy', 'Terms of Service'].map(l => (
-                <li key={l}><a href="#" className="hover:text-[oklch(0.70_0.15_76)] transition-colors">{l}</a></li>
+                <li key={l}><a href="#" className="hover:text-green-600 transition-colors">{l}</a></li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-primary-foreground/50">© 2024 EduCore. All rights reserved.</p>
-          <p className="text-xs text-primary-foreground/50">Built with ❤️ for Bangladesh's schools</p>
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
+          <p>© {currentYear} Code 2 Launch. All Rights Reserved.</p>
+          <p>Powered by
+            <Link href="https://www.code2launch.co/" target="_blank" className="ml-1 font-bold text-slate-300 hover:text-yellow-400 transition underline">
+              Code2Launch
+            </Link>
+          </p>
         </div>
       </div>
     </footer>
