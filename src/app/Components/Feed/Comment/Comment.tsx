@@ -1,0 +1,185 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useState } from "react";
+import { useAppSelector } from "@/redux/hooks";
+import { toast } from "sonner";
+import Image from "next/image";
+import { AiOutlineLike } from "react-icons/ai";
+import { IoMdHeartEmpty } from "react-icons/io";
+import CommentInput from "./CommentInput";
+import CommentActions from "./CommentActions";
+import { Edit, Trash } from "lucide-react";
+import ConfirmDeleteDialog from "../../../../components/ConfirmDeleteDialog";
+import LikedUsersDialog from "../../../../components/LikedUserDialog";
+
+
+interface CommentProps {
+  comment: any;
+  postId: string;
+  onReply: (postId: string, content: string, parentId: string) => void;
+  onEdit: (commentId: string, content: string) => void;
+  onDelete: (commentId: string) => void;
+  isDeleting?: boolean;
+  level?: number;
+}
+
+export default function Comment({
+  comment,
+  postId,
+  onReply,
+  onEdit,
+  onDelete,
+  isDeleting,
+  level = 0
+}: CommentProps) {
+  const { user } = useAppSelector((state) => state.auth);
+  const [isReplying, setIsReplying] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
+  const [editContent, setEditContent] = useState(comment.content);
+  const [showAllReplies, setShowAllReplies] = useState(false);
+  const [likesDialogOpen, setLikesDialogOpen] = useState(false);
+
+
+
+  const handleReplySubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (replyContent.trim()) {
+        onReply(postId, replyContent, comment.id);
+        setReplyContent("");
+        setIsReplying(false);
+      } else {
+        toast.error("Please enter a reply");
+      }
+    }
+  };
+
+  const handleEditSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (editContent.trim()) {
+        onEdit(comment.id, editContent);
+        setIsEditing(false);
+      } else {
+        toast.error("Please enter content");
+      }
+    }
+  };
+
+  const handleDelete = () => {
+    onDelete(comment.id);
+  };
+
+  const replies = comment.replies || [];
+
+  const latestReply = replies[0];
+  const previousReplyCount = replies.length - 1;
+
+  const visibleReplies = showAllReplies
+    ? replies
+    : latestReply
+      ? [latestReply]
+      : [];
+
+  return (
+    <div className={`${level > 0 ? 'ml-14 mt-3' : 'mt-6'}`}>
+
+      <div className="relative flex items-start gap-3">
+        <Image
+          src="/assets/txt_img.png"
+          alt="txt img"
+          height={40}
+          width={40}
+          priority
+        />
+        <div className="w-full bg-[#f6f6f6] rounded-2xl p-3">
+          <div className="flex justify-between items-start mb-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-sm text-gray-900">
+                {comment.author.firstName} {comment.author.lastName}
+              </span>
+            </div>
+
+            {user?.email === comment.author.email && (
+              <div className="flex gap-2 text-xs">
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="hover:text-blue-500 cursor-pointer"
+                >
+                  <Edit size={15} />
+                </button>
+                <ConfirmDeleteDialog item={"Comment"} button={
+                  <Trash size={15} />
+                } isDeleting={isDeleting} handleDelete={handleDelete} />
+              </div>
+            )}
+          </div>
+
+
+          {isEditing ? (
+            <CommentInput
+              newComment={editContent}
+              setNewComment={setEditContent}
+              handleCreateComment={handleEditSubmit}
+            />
+          ) : (
+            <p className="text-muted-foreground text-sm">{comment.content}</p>
+          )}
+        </div>
+        <div
+          onClick={() => comment.likes?.length > 0 && setLikesDialogOpen(true)}
+          className="absolute right-0 -bottom-2 flex items-center shadow-md rounded-full px-1 bg-white text-sm">
+          <AiOutlineLike className="text-blue-500" />
+          <IoMdHeartEmpty className="text-red-500 me-1" />
+          <span>{comment._count?.likes || 0}</span>
+        </div>
+      </div>
+      <LikedUsersDialog
+        open={likesDialogOpen}
+        onOpenChange={setLikesDialogOpen}
+        likes={comment.likes || []}
+      />
+      <CommentActions level={level} user={user} isEditing={isEditing} setIsReplying={setIsReplying} isReplying={isReplying} comment={comment} />
+
+      {isReplying && level < 1 && (
+        <div className="mt-2 ml-12">
+          <CommentInput
+            newComment={replyContent}
+            setNewComment={setReplyContent}
+            handleCreateComment={handleReplySubmit}
+          />
+        </div>
+      )}
+
+      {replies.length > 0 && (
+        <div className="mt-2">
+
+          {replies.length > 1 && (
+            <p
+              onClick={() => setShowAllReplies(!showAllReplies)}
+              className="text-sm font-medium text-muted-foreground cursor-pointer mb-1 ms-14"
+            >
+              {showAllReplies
+                ? "Hide replies"
+                : `View all ${previousReplyCount} repl${previousReplyCount > 1 ? "ies" : "y"}`}
+            </p>
+          )}
+
+          {visibleReplies.map((reply: any) => (
+            <Comment
+              key={reply.id}
+              comment={reply}
+              postId={postId}
+              onReply={onReply}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              level={level + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
