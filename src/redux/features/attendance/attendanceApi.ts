@@ -68,8 +68,6 @@ export const attendanceApi = baseApi.injectEndpoints({
       }),
 
       providesTags: ["Attendance"],
-
-      pollingInterval: 30000,
     }),
 
     markStudentAttendance: builder.mutation({
