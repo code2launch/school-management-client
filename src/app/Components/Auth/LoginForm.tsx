@@ -218,7 +218,7 @@ export default function LoginForm() {
                     }}
                     className="group rounded-lg border border-slate-200 bg-slate-50 py-2 text-left transition-all hover:border-green-200 hover:bg-green-50"
                   >
-                    <p className="text-xs font-medium text-slate-400 text-center">
+                    <p className="text-xs font-medium text-black text-center">
                       Demo {role.label} Account
                     </p>
 
@@ -243,7 +243,7 @@ export default function LoginForm() {
                       required: 'Phone is required',
                     })}
                     placeholder="01700000000"
-                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-green-500 focus:ring-4 focus:ring-green-100"
+                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-5 text-sm outline-none transition-all placeholder:text-slate-400 text-black focus:border-green-500 focus:ring-4 focus:ring-green-100"
                   />
 
                   {errors.phone && (
@@ -266,7 +266,7 @@ export default function LoginForm() {
                       })}
                       type={showPw ? 'text' : 'password'}
                       placeholder="Enter your password"
-                      className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-5 pr-14 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-green-500 focus:ring-4 focus:ring-green-100"
+                      className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-5 pr-14 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-green-500 focus:ring-4 focus:ring-green-100 text-black"
                     />
 
                     <button
