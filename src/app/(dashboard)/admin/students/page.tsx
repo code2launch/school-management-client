@@ -9,11 +9,16 @@ import EmptyState from '@/app/Components/Dashboard/EmptyState';
 import { GraduationCap, Search, Plus, Trash2, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { toast } from 'sonner';
+import AdmitStudentModal from '../../../Components/Dashboard/Students/AdmitStudentModal';
+import StudentDetailsModal from '../../../Components/Dashboard/Students/StudentDetailsModal';
 
 export default function StudentsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [classFilter, setClassFilter] = useState('');
+  const [admitOpen, setAdmitOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
   const { data: yearData } = useGetCurrentYearQuery();
   const academicYearId = yearData?.data?.id;
@@ -47,7 +52,7 @@ export default function StudentsPage() {
         title="Students"
         subtitle={`${meta?.total ?? 0} students enrolled`}
         action={
-          <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all shadow-sm hover:-translate-y-0.5">
+          <button onClick={() => setAdmitOpen(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all shadow-sm hover:-translate-y-0.5">
             <Plus size={15} /> Admit Student
           </button>
         }
@@ -133,13 +138,18 @@ export default function StudentsPage() {
                       <td className="text-sm text-muted-foreground">{formatDate(s.createdAt)}</td>
                       <td>
                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${s.isActive
-                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
-                            : 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                          ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+                          : 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
                           }`}>{s.isActive ? 'Active' : 'Inactive'}</span>
                       </td>
                       <td>
                         <div className="flex items-center gap-1">
-                          <button className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
+                          <button
+                            onClick={() => {
+                              setSelectedStudent(s);
+                              setDetailsOpen(true);
+                            }}
+                            className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
                             <Eye size={14} />
                           </button>
                           <button
@@ -176,6 +186,16 @@ export default function StudentsPage() {
           </div>
         )}
       </div>
+      <AdmitStudentModal
+        open={admitOpen}
+        onClose={() => setAdmitOpen(false)}
+      />
+
+      <StudentDetailsModal
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        student={selectedStudent}
+      />
     </div>
   );
 }
