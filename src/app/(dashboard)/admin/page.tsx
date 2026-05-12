@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useGetDashboardQuery } from '@/redux/features/school/schoolApi';
 import StatCard from '@/app/Components/Dashboard/StatCard';
-import { Users, GraduationCap, Wallet, ClipboardCheck, TrendingUp, AlertCircle, BookOpen, Bell } from 'lucide-react';
+import { Users, GraduationCap, Wallet, ClipboardCheck, TrendingUp, AlertCircle, Bell } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -60,7 +61,7 @@ export default function AdminDashboard() {
         {/* Today attendance detail */}
         <div className="bg-card border border-border rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-foreground text-sm">Today's Attendance</h3>
+            <h3 className="font-semibold text-foreground text-sm">Today&apos;s Attendance</h3>
             <Link href="/admin/attendance" className="text-xs text-primary hover:underline">View all</Link>
           </div>
           {stats?.todayAttendance ? (

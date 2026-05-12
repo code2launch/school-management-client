@@ -13,10 +13,14 @@ export const noticeApi = baseApi.injectEndpoints({
     }),
     createNotice: builder.mutation<any, any>({
       query: (data) => ({ url: "/notices", method: "POST", body: data }),
-      invalidatesTags: ["Notices"],
+      invalidatesTags: ["Notices", "Dashboard"],
     }),
     updateNotice: builder.mutation<any, { id: string; data: any }>({
-      query: ({ id, data }) => ({ url: `/notices/${id}`, method: "PATCH", body: data }),
+      query: ({ id, data }) => ({
+        url: `/notices/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
       invalidatesTags: ["Notices"],
     }),
     deleteNotice: builder.mutation<any, string>({
@@ -27,6 +31,9 @@ export const noticeApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetNoticesQuery, useGetNoticeFeedQuery,
-  useCreateNoticeMutation, useUpdateNoticeMutation, useDeleteNoticeMutation,
+  useGetNoticesQuery,
+  useGetNoticeFeedQuery,
+  useCreateNoticeMutation,
+  useUpdateNoticeMutation,
+  useDeleteNoticeMutation,
 } = noticeApi;

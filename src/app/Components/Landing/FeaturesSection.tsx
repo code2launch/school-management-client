@@ -56,15 +56,15 @@ const FEATURES = [
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-background">
+    <section id="features" className="py-24 text-black">
       <div className="max-w-7xl mx-auto px-5 xl:px-0">
         {/* Header */}
         <div className="text-center mb-16">
-          <span className="badge-navy mb-4 inline-block">Core Features</span>
-          <h2 className="font-playfair font-bold text-3xl sm:text-4xl lg:text-5xl text-foreground mb-4 leading-tight">
+          <span className="mb-4 text-sm font-semibold uppercase tracking-[3px] text-green-600">Core Features</span>
+          <h2 className="font-playfair font-bold text-3xl sm:text-4xl  mb-4 leading-tight">
             Everything your school needs,
             <br />
-            <span className="gradient-text">nothing it doesn't.</span>
+            <span className="gradient-text">nothing it doesn&apos;t.</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Purpose-built for Bangladeshi schools — covering the full academic cycle at a fraction of the cost.
@@ -76,13 +76,13 @@ export default function FeaturesSection() {
           {FEATURES.map((feat, i) => (
             <div
               key={feat.title}
-              className={`group card-hover rounded-2xl p-6 bg-card border border-border animate-fade-up delay-${Math.min(i * 100, 700)}`}
+              className={`group card-hover rounded-2xl p-6 border border-gray-300 animate-fade-up delay-${Math.min(i * 100, 700)}`}
             >
               <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${feat.accent} transition-transform group-hover:scale-110`}>
                 <feat.icon size={20} />
               </div>
-              <h3 className="font-semibold text-foreground text-sm mb-2 leading-snug">{feat.title}</h3>
-              <p className="text-muted-foreground text-xs leading-relaxed">{feat.desc}</p>
+              <h3 className="font-semibold text-sm mb-2 leading-snug">{feat.title}</h3>
+              <p className=" text-xs leading-relaxed">{feat.desc}</p>
             </div>
           ))}
         </div>

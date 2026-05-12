@@ -1,33 +1,93 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "../../api/baseApi";
+
+export interface AttendanceRecordPayload {
+  studentId: string;
+  status: "PRESENT" | "ABSENT" | "LATE" | "LEAVE";
+  note?: string;
+}
+
+export interface MarkAttendancePayload {
+  sectionId: string;
+  academicYearId: string;
+  date: string;
+  records: AttendanceRecordPayload[];
+}
 
 export const attendanceApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAttendanceByDate: builder.query<any, { sectionId: string; date: string; academicYearId: string }>({
-      query: (params) => ({ url: "/attendance/students/by-date", params }),
+    getAttendanceByDate: builder.query({
+      query: (params: {
+        sectionId: string;
+        date: string;
+        academicYearId: string;
+      }) => ({
+        url: "/attendance/students/by-date",
+        params,
+      }),
+
+      providesTags: ["Attendance"],
+
+      keepUnusedDataFor: 60,
+    }),
+
+    getMonthlyAttendance: builder.query({
+      query: (params: {
+        sectionId: string;
+        academicYearId: string;
+        month: string;
+        year: string;
+      }) => ({
+        url: "/attendance/students/monthly",
+        params,
+      }),
+
       providesTags: ["Attendance"],
     }),
-    getMonthlyAttendance: builder.query<any, { sectionId: string; academicYearId: string; month: string; year: string }>({
-      query: (params) => ({ url: "/attendance/students/monthly", params }),
+
+    getStudentAttendanceSummary: builder.query({
+      query: ({
+        studentId,
+        ...params
+      }: {
+        studentId: string;
+        academicYearId: string;
+        month?: string;
+        year?: string;
+      }) => ({
+        url: `/attendance/students/${studentId}/summary`,
+        params,
+      }),
+
       providesTags: ["Attendance"],
     }),
-    getStudentAttendanceSummary: builder.query<any, { studentId: string; academicYearId: string; month?: string; year?: string }>({
-      query: ({ studentId, ...params }) => ({ url: `/attendance/students/${studentId}/summary`, params }),
+
+    getTodaySummary: builder.query({
+      query: (params: { sectionId: string; academicYearId: string }) => ({
+        url: "/attendance/students/today-summary",
+        params,
+      }),
+
       providesTags: ["Attendance"],
+
+      pollingInterval: 30000,
     }),
-    getTodaySummary: builder.query<any, { sectionId: string; academicYearId: string }>({
-      query: (params) => ({ url: "/attendance/students/today-summary", params }),
-      providesTags: ["Attendance"],
-    }),
-    markStudentAttendance: builder.mutation<any, any>({
-      query: (data) => ({ url: "/attendance/students", method: "POST", body: data }),
+
+    markStudentAttendance: builder.mutation({
+      query: (data: MarkAttendancePayload) => ({
+        url: "/attendance/students",
+        method: "POST",
+        body: data,
+      }),
+
       invalidatesTags: ["Attendance", "Dashboard"],
     }),
   }),
 });
 
 export const {
-  useGetAttendanceByDateQuery, useGetMonthlyAttendanceQuery,
-  useGetStudentAttendanceSummaryQuery, useGetTodaySummaryQuery,
+  useGetAttendanceByDateQuery,
+  useGetMonthlyAttendanceQuery,
+  useGetStudentAttendanceSummaryQuery,
+  useGetTodaySummaryQuery,
   useMarkStudentAttendanceMutation,
 } = attendanceApi;

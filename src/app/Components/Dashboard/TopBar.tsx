@@ -6,6 +6,7 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { useAppSelector } from '@/redux/hooks';
 import { getInitials } from '@/lib/utils';
 import { useState } from 'react';
+import Link from 'next/link';
 
 const PAGE_TITLES: Record<string, string> = {
   '/admin': 'Dashboard',
@@ -35,7 +36,7 @@ export default function TopBar() {
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-30 flex items-center px-5 gap-4">
-      <div className="flex-1">
+      <div className="ms-10 lg:ms-0 flex-1">
         <h1 className="font-playfair font-bold text-lg text-foreground">{title}</h1>
         <p className="text-xs text-muted-foreground hidden sm:block">
           {new Date().toLocaleDateString('en-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -52,10 +53,10 @@ export default function TopBar() {
         />
       </div>
 
-      <button className="relative p-2 rounded-xl hover:bg-accent transition-colors">
+      <Link href={`${user?.role === 'STUDENT' ? '/student' : user?.role === 'TEACHER' ? '/teacher' : '/admin'}/notices`} className="relative p-2 rounded-xl hover:bg-accent transition-colors">
         <Bell size={18} className="text-muted-foreground" />
         <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[oklch(0.70_0.15_76)]" />
-      </button>
+      </Link>
 
       <ThemeToggleButton />
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -7,10 +8,14 @@ import EmptyState from '@/app/Components/Dashboard/EmptyState';
 import { Users, Search, Plus, Trash2, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { toast } from 'sonner';
+import CreateTeacherModal from '../../../Components/Dashboard/Teacher/CreateTeacherModal';
+import TeacherDetailsModal from '../../../Components/Dashboard/Teacher/TeacherDetailsModal';
 
 export default function TeachersPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [createOpen, setCreateOpen] = useState(false);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
 
   const { data, isLoading } = useGetTeachersQuery({
     page: String(page), limit: '15',
@@ -35,7 +40,7 @@ export default function TeachersPage() {
         title="Teachers"
         subtitle={`${meta?.total ?? 0} teaching staff`}
         action={
-          <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all shadow-sm hover:-translate-y-0.5">
+          <button onClick={() => setCreateOpen(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all shadow-sm hover:-translate-y-0.5">
             <Plus size={15} /> Add Teacher
           </button>
         }
@@ -100,15 +105,14 @@ export default function TeachersPage() {
                     </td>
                     <td className="text-sm text-muted-foreground">{t.joinDate ? formatDate(t.joinDate) : '—'}</td>
                     <td>
-                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                        t.isActive
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${t.isActive
                           ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                           : 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
-                      }`}>{t.isActive ? 'Active' : 'Inactive'}</span>
+                        }`}>{t.isActive ? 'Active' : 'Inactive'}</span>
                     </td>
                     <td>
                       <div className="flex items-center gap-1">
-                        <button className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
+                        <button onClick={() => setDetailsId(t.id)} className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
                           <Eye size={14} />
                         </button>
                         <button onClick={() => handleDelete(t.id, t.name)}
@@ -125,14 +129,23 @@ export default function TeachersPage() {
         )}
         {meta && meta.total > 15 && (
           <div className="flex items-center justify-between px-5 py-3 border-t border-border">
-            <p className="text-xs text-muted-foreground">Showing {(page-1)*15+1}–{Math.min(page*15, meta.total)} of {meta.total}</p>
+            <p className="text-xs text-muted-foreground">Showing {(page - 1) * 15 + 1}–{Math.min(page * 15, meta.total)} of {meta.total}</p>
             <div className="flex gap-1">
-              <button onClick={() => setPage(p => Math.max(1, p-1))} disabled={page===1} className="p-1.5 rounded-lg hover:bg-accent disabled:opacity-40 transition-colors"><ChevronLeft size={15} /></button>
-              <button onClick={() => setPage(p => p+1)} disabled={page*15 >= meta.total} className="p-1.5 rounded-lg hover:bg-accent disabled:opacity-40 transition-colors"><ChevronRight size={15} /></button>
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-1.5 rounded-lg hover:bg-accent disabled:opacity-40 transition-colors"><ChevronLeft size={15} /></button>
+              <button onClick={() => setPage(p => p + 1)} disabled={page * 15 >= meta.total} className="p-1.5 rounded-lg hover:bg-accent disabled:opacity-40 transition-colors"><ChevronRight size={15} /></button>
             </div>
           </div>
         )}
       </div>
+      <CreateTeacherModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+      />
+
+      <TeacherDetailsModal
+        teacherId={detailsId}
+        onClose={() => setDetailsId(null)}
+      />
     </div>
   );
 }
