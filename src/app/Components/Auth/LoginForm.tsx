@@ -207,7 +207,7 @@ export default function LoginForm() {
               </div>
 
               {/* demo accounts */}
-              <div className="mb-8 grid grid-cols-2 gap-3">
+              {/* <div className="mb-8 grid grid-cols-2 gap-3">
                 {DEMO_ROLES.map((role) => (
                   <button
                     key={role.label}
@@ -225,7 +225,7 @@ export default function LoginForm() {
 
                   </button>
                 ))}
-              </div>
+              </div> */}
 
               {/* form */}
               <form
